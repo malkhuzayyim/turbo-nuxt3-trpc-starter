@@ -1,14 +1,24 @@
 {
-  "name": "@mono/app",
+  "name": "@mono/main",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "set PORT=3011 && nuxt dev",
+    "dev": "set PORT=3010 && nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "nuxt": "3.0.0-rc.10"
+    "@mono/api": "*",
+    "@nuxtjs/eslint-config-typescript": "^11.0.0",
+    "@trpc/client": "^9.27.2",
+    "@trpc/server": "^9.25.3",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nuxt": "3.0.0-rc.10",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.3"
   }
 }

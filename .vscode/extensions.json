@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "vue.volar",
+        "Prisma.prisma",
+        "mtxr.sqltools",
+        "ChakrounAnas.turbo-console-log",
+        "lokalise.i18n-ally",
+        "aaron-bond.better-comments"
+    ]
+}

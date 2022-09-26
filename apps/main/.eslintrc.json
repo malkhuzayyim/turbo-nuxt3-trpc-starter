@@ -1,0 +1,20 @@
+{
+    "root": true,
+    "extends": [
+        "@nuxtjs/eslint-config-typescript",
+        "plugin:prettier/recommended"
+    ],
+    "rules": {
+        "no-console": "off",
+        "prettier/prettier": [
+            "warn",
+            {
+                "semi": true,
+                "arrowParens": "always",
+                "singleQuote": false,
+                "endOfLine": "auto",
+                "trailingComma": "es5"
+            }
+        ]
+    }
+}

@@ -1,9 +1,9 @@
-<template>
-  <div>
-    Hi
-  </div>
-</template>
+<script setup lang="ts">
+const { $trpcClient } = useNuxtApp();
 
-<script setup>
-  console.log("what's up?")
+const user = await $trpcClient.query("getUser");
 </script>
+
+<template>
+  <div>{{ user }}</div>
+</template>

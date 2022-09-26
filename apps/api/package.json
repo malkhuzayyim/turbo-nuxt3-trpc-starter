@@ -1,20 +1,15 @@
 {
   "name": "@mono/api",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "ts-node-dev ./src/server",
-    "scratchpad": "ts-node ./scratchpad"
-  },
-  "_moduleAliases": {
-    "@src": "src"
+    "dev": "prisma generate && ts-node-dev ./src/app",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^4",
     "@trpc/server": "^9.25.3",
-    "app-module-path": "^2.2.0",
     "express": "^4.18.1",
-    "module-alias": "^2.2.2",
     "typescript": "4.7.4",
     "zod": "^3.19.1"
   },

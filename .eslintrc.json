@@ -1,0 +1,10 @@
+{
+  "root": true,
+  "settings": {
+    "next": {
+      "rootDir": [
+        "apps/*/"
+      ]
+    }
+  }
+}

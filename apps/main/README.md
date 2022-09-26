@@ -14,7 +14,7 @@ pnpm install --shamefully-hoist
 
 ## Development Server
 
-Start the development server on http://localhost:3000
+Start the development server on http://localhost:3010
 
 ```bash
 pnpm run dev
