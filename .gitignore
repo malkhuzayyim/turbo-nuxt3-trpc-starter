@@ -8,14 +8,20 @@ node_modules
 # testing
 coverage
 
-# next.js
-.next/
-out/
-build
+# nuxt.js
+node_modules
+*.log*
+.nuxt
+.nitro
+.cache
+.output
+.env
+dist
 
 # misc
 .DS_Store
 *.pem
+db.sqlite*
 
 # debug
 npm-debug.log*
