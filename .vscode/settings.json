@@ -7,16 +7,12 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
-    "editor.formatOnSave": true,
     "eslint.format.enable": true,
     "[javascript]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     },
     "[typescript]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-        "editor.codeActionsOnSave": {
-            "source.fixAll": true
-        }
     },
     "[prisma]": {
         "editor.defaultFormatter": "Prisma.prisma"

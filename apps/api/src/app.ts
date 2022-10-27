@@ -1,8 +1,8 @@
 import * as trpcExpress from "@trpc/server/adapters/express";
 import express from "express";
 
-import { appRouter } from "./router";
-import { createContext } from "./middleware/context";
+import { appRouter } from "@mono/api/src/router";
+import { createContext } from "@mono/api/src/middleware/context";
 
 const PORT = 3011;
 

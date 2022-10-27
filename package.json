@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
     "build": "turbo run build",
@@ -19,6 +18,5 @@
   "engines": {
     "node": ">=14.17.0"
   },
-  "dependencies": {},
   "packageManager": "pnpm@7.1.0"
 }

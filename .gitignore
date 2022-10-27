@@ -18,6 +18,9 @@ node_modules
 .env
 dist
 
+# generated
+generated
+
 # misc
 .DS_Store
 *.pem
