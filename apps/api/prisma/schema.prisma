@@ -3,6 +3,14 @@ generator client {
   output   = "../generated/client"
 }
 
+generator trpc {
+  provider       = "node ./modules/prisma-generator/dist/generator.js"
+  withMiddleware = false
+  withShield     = false
+  contextPath    = "../src/middleware/context.ts"
+  output         = "../generated/trpc"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")

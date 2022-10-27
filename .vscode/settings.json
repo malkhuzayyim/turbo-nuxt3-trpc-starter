@@ -2,7 +2,6 @@
     "eslint.workingDirectories": [
         "./apps/main",
         "./apps/api",
-        "./packages/ui",
     ],
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
