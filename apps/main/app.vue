@@ -1,10 +1,11 @@
 <script setup lang="ts">
-const { $trpcClient } = useNuxtApp();
+import { useTrpcClient } from "@/composables/useTrpcClient";
+const trpcClient = useTrpcClient();
 
-const user = await $trpcClient.query("users.findUnique", { id: 1 });
+const user = await trpcClient.query("users.findUnique", { id: 1 });
 console.log("🚀 ~ user", user);
 
-const users = await $trpcClient.query("users.");
+const users = await trpcClient.query("users.findMany");
 console.log("🚀 ~ users", users);
 
 const state = reactive({ count: 5 });

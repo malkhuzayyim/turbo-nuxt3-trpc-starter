@@ -37,3 +37,81 @@ Learn more about the power of Turborepo:
 - [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
 - [Configuration Options](https://turborepo.org/docs/reference/configuration)
 - [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+
+
+##### Issue with Nuxt Plugins Typesafety
+
+tRPC client typesafety isn't maintained when the trpcClient is defined as nuxt plugin:
+
+v1: Composable trpc client implementation
+```ts
+// composables/useTrpcClient.ts
+import { createTRPCClient } from "@trpc/client";
+import type { AppRouter } from "@mono/api/src/router";
+
+export const useTrpcClient = () => {
+  const trpcClient = createTRPCClient<AppRouter>({
+    url: "http://localhost:3011/trpc",
+  });
+  return trpcClient;
+};
+
+// app.vue
+<script setup lang="ts">
+import { useTrpcClient } from "@/composables/useTrpcClient";
+const trpcClient = useTrpcClient();
+
+const user = await trpcClient.query("users.findUnique", { id: 1 });
+console.log("🚀 ~ user", user);
+
+const users = await trpcClient.query("users.findMany");
+console.log("🚀 ~ users", users);
+</script>
+
+```
+
+v2: plugin trpc client implementation
+```ts
+// ~plugins/trpcClient.ts
+import { createTRPCClient } from "@trpc/client";
+import type { AppRouter } from "@mono/api/src/router";
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const trpcClient = createTRPCClient<AppRouter>({
+    url: nuxtApp.$config.public.baseURL,
+  });
+  return {
+    provide: {
+      trpcClient,
+    },
+  };
+});
+
+// usage
+<script setup lang="ts">
+const { $trpcClient } = useNuxtApp();
+
+const user = await $trpcClient.query("users.findUnique", { id: 1 });
+console.log("🚀 ~ user", user);
+
+const users = await $trpcClient.query("users.findMany");
+console.log("🚀 ~ users", users);
+</script>
+```
+
+v1 works all the time
+v2 works on VSCode reload, but on first interaction with file drops typesafety and the client has type `any`
+
+nuxt.config.ts:
+```ts
+  typescript: {
+    strict: true,
+    tsConfig: {
+      compilerOptions: {
+        paths: {
+          "@mono/api/*": ["../api/*"],
+        },
+      },
+    },
+  },
+```
