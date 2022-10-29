@@ -4,7 +4,7 @@ const { $trpcClient } = useNuxtApp();
 const user = await $trpcClient.query("users.findUnique", { id: 1 });
 console.log("🚀 ~ user", user);
 
-const users = await $trpcClient.query("users.findMany");
+const users = await $trpcClient.query("users.");
 console.log("🚀 ~ users", users);
 
 const state = reactive({ count: 5 });

@@ -1,4 +1,4 @@
-import { DMMF as PrismaDMMF } from '@prisma/client/runtime';
+import { DMMF as PrismaDMMF } from "@prisma/client/runtime";
 
 export type TransformerParams = {
   enumTypes?: PrismaDMMF.SchemaEnum[];

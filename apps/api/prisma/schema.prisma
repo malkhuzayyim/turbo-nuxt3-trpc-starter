@@ -4,10 +4,10 @@ generator client {
 }
 
 generator trpc {
-  provider       = "node ./modules/prisma-generator/dist/generator.js"
+  provider       = "node ./modules/prisma-trpc-generator/dist/generator.js"
   withMiddleware = false
   withShield     = false
-  contextPath    = "../src/middleware/context.ts"
+  contextPath    = "@mono/api/src/middleware/context"
   output         = "../generated/trpc"
 }
 

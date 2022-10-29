@@ -1,8 +1,8 @@
-import type { DMMF as PrismaDMMF } from '@prisma/generator-helper';
-import path from 'path';
-import { isMongodbRawOp } from './helpers';
-import { TransformerParams } from './types';
-import { writeFileSafely } from './utils/writeFileSafely';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import type { DMMF as PrismaDMMF } from "@prisma/generator-helper";
+import path from "path";
+import { TransformerParams } from "./types";
+import { writeFileSafely } from "../utils/writeFileSafely";
 
 export default class Transformer {
   name: string;
@@ -13,13 +13,13 @@ export default class Transformer {
   static enumNames: string[] = [];
   static rawOpsMap: { [name: string]: string } = {};
   static provider: string;
-  private static outputPath: string = './generated';
+  private static outputPath = "./generated";
   private hasJson = false;
   static isDefaultPrismaClientOutput?: boolean;
   static prismaClientOutputPath?: string;
 
   constructor(params: TransformerParams) {
-    this.name = params.name ?? '';
+    this.name = params.name ?? "";
     this.fields = params.fields ?? [];
     this.modelOperations = params.modelOperations ?? [];
     this.enumTypes = params.enumTypes ?? [];
@@ -42,20 +42,20 @@ export default class Transformer {
       .map((name) =>
         Transformer.enumNames.includes(name)
           ? `import { ${name}Schema } from '../enums/${name}.schema';`
-          : `import { ${name}ObjectSchema } from './${name}.schema';`,
+          : `import { ${name}ObjectSchema } from './${name}.schema';`
       )
-      .join(';\r\n');
+      .join(";\r\n");
   }
 
   getPrismaStringLine(
     field: PrismaDMMF.SchemaArg,
     inputType: PrismaDMMF.SchemaArgInputType,
-    inputsLength: number,
+    inputsLength: number
   ) {
-    const isEnum = inputType.location === 'enumTypes';
+    const isEnum = inputType.location === "enumTypes";
 
-    let objectSchemaLine = `${inputType.type}ObjectSchema`;
-    let enumSchemaLine = `${inputType.type}Schema`;
+    const objectSchemaLine = `${inputType.type}ObjectSchema`;
+    const enumSchemaLine = `${inputType.type}Schema`;
 
     const schema =
       inputType.type === this.name
@@ -64,9 +64,9 @@ export default class Transformer {
         ? enumSchemaLine
         : objectSchemaLine;
 
-    const arr = inputType.isList ? '.array()' : '';
+    const arr = inputType.isList ? ".array()" : "";
 
-    const opt = !field.isRequired ? '.optional()' : '';
+    const opt = !field.isRequired ? ".optional()" : "";
 
     return inputsLength === 1
       ? `  ${field.name}: z.lazy(() => ${schema})${arr}${opt}`
@@ -76,59 +76,59 @@ export default class Transformer {
   wrapWithZodValidators(
     mainValidator: string,
     field: PrismaDMMF.SchemaArg,
-    inputType: PrismaDMMF.SchemaArgInputType,
+    inputType: PrismaDMMF.SchemaArgInputType
   ) {
-    let line: string = '';
+    let line = "";
     line = mainValidator;
 
     if (inputType.isList) {
-      line += '.array()';
+      line += ".array()";
     }
 
     if (!field.isRequired) {
-      line += '.optional()';
+      line += ".optional()";
     }
 
     return line;
   }
 
   getObjectSchemaLine(
-    field: PrismaDMMF.SchemaArg,
+    field: PrismaDMMF.SchemaArg
   ): [string, PrismaDMMF.SchemaArg, boolean][] {
-    let lines = field.inputTypes;
+    const lines = field.inputTypes;
 
     if (lines.length === 0) {
       return [];
     }
 
     let alternatives = lines.reduce<string[]>((result, inputType) => {
-      if (inputType.type === 'String') {
-        result.push(this.wrapWithZodValidators('z.string()', field, inputType));
+      if (inputType.type === "String") {
+        result.push(this.wrapWithZodValidators("z.string()", field, inputType));
       } else if (
-        inputType.type === 'Int' ||
-        inputType.type === 'Float' ||
-        inputType.type === 'Decimal'
+        inputType.type === "Int" ||
+        inputType.type === "Float" ||
+        inputType.type === "Decimal"
       ) {
-        result.push(this.wrapWithZodValidators('z.number()', field, inputType));
-      } else if (inputType.type === 'BigInt') {
-        result.push(this.wrapWithZodValidators('z.bigint()', field, inputType));
-      } else if (inputType.type === 'Boolean') {
+        result.push(this.wrapWithZodValidators("z.number()", field, inputType));
+      } else if (inputType.type === "BigInt") {
+        result.push(this.wrapWithZodValidators("z.bigint()", field, inputType));
+      } else if (inputType.type === "Boolean") {
         result.push(
-          this.wrapWithZodValidators('z.boolean()', field, inputType),
+          this.wrapWithZodValidators("z.boolean()", field, inputType)
         );
-      } else if (inputType.type === 'DateTime') {
-        result.push(this.wrapWithZodValidators('z.date()', field, inputType));
-      } else if (inputType.type === 'Json') {
+      } else if (inputType.type === "DateTime") {
+        result.push(this.wrapWithZodValidators("z.date()", field, inputType));
+      } else if (inputType.type === "Json") {
         this.hasJson = true;
 
-        result.push(this.wrapWithZodValidators('jsonSchema', field, inputType));
+        result.push(this.wrapWithZodValidators("jsonSchema", field, inputType));
       } else {
-        const isEnum = inputType.location === 'enumTypes';
+        const isEnum = inputType.location === "enumTypes";
 
-        if (inputType.namespace === 'prisma' || isEnum) {
+        if (inputType.namespace === "prisma" || isEnum) {
           if (
             inputType.type !== this.name &&
-            typeof inputType.type === 'string'
+            typeof inputType.type === "string"
           ) {
             this.addSchemaImport(inputType.type);
           }
@@ -146,23 +146,23 @@ export default class Transformer {
 
     if (alternatives.length > 1) {
       alternatives = alternatives.map((alter) =>
-        alter.replace('.optional()', ''),
+        alter.replace(".optional()", "")
       );
     }
 
-    const fieldName = alternatives.some((alt) => alt.includes(':'))
-      ? ''
+    const fieldName = alternatives.some((alt) => alt.includes(":"))
+      ? ""
       : `  ${field.name}:`;
 
-    const opt = !field.isRequired ? '.optional()' : '';
+    const opt = !field.isRequired ? ".optional()" : "";
 
     let resString =
       alternatives.length === 1
-        ? alternatives.join(',\r\n')
-        : `z.union([${alternatives.join(',\r\n')}])${opt}`;
+        ? alternatives.join(",\r\n")
+        : `z.union([${alternatives.join(",\r\n")}])${opt}`;
 
     if (field.isNullable) {
-      resString += '.nullable()';
+      resString += ".nullable()";
     }
 
     return [[`  ${fieldName} ${resString} `, field, true]];
@@ -170,16 +170,16 @@ export default class Transformer {
 
   getFieldValidators(
     zodStringWithMainType: string,
-    field: PrismaDMMF.SchemaArg,
+    field: PrismaDMMF.SchemaArg
   ) {
     const { isRequired, isNullable } = field;
 
     if (!isRequired) {
-      zodStringWithMainType += '.optional()';
+      zodStringWithMainType += ".optional()";
     }
 
     if (isNullable) {
-      zodStringWithMainType += '.nullable()';
+      zodStringWithMainType += ".nullable()";
     }
 
     return zodStringWithMainType;
@@ -187,18 +187,18 @@ export default class Transformer {
 
   getImportZod() {
     let zodImportStatement = "import { z } from 'zod';";
-    zodImportStatement += '\n';
+    zodImportStatement += "\n";
     return zodImportStatement;
   }
 
   getImportPrisma() {
-    let prismaClientPath = '@prisma/client';
+    let prismaClientPath = "@prisma/client";
     if (Transformer.isDefaultPrismaClientOutput) {
-      prismaClientPath = Transformer.prismaClientOutputPath ?? '';
+      prismaClientPath = Transformer.prismaClientOutputPath ?? "";
       prismaClientPath = path
         .relative(
-          path.join(Transformer.outputPath, 'schemas', 'objects'),
-          prismaClientPath,
+          path.join(Transformer.outputPath, "schemas", "objects"),
+          prismaClientPath
         )
         .split(path.sep)
         .join(path.posix.sep);
@@ -207,7 +207,7 @@ export default class Transformer {
   }
 
   getJsonSchemaImplementation() {
-    let jsonSchemaImplementation = '';
+    let jsonSchemaImplementation = "";
 
     if (this.hasJson) {
       jsonSchemaImplementation += `\n`;
@@ -223,26 +223,21 @@ export default class Transformer {
   getImportsForObjectSchemas() {
     let imports = this.getImportZod();
     imports += this.getAllSchemaImports();
-    imports += '\n\n';
+    imports += "\n\n";
     return imports;
   }
 
   getImportsForSchemas(additionalImports: string[]) {
     let imports = this.getImportZod();
-    imports += [...additionalImports].join(';\r\n');
-    imports += '\n\n';
+    imports += [...additionalImports].join(";\r\n");
+    imports += "\n\n";
     return imports;
   }
 
   addExportObjectSchema(schema: string) {
-    let name = this.name;
-    let exportName = this.name;
-    if (Transformer.provider === 'mongodb') {
-      if (isMongodbRawOp(name)) {
-        name = Transformer.rawOpsMap[name];
-        exportName = name.replace('Args', '');
-      }
-    }
+    const name = this.name;
+    const exportName = this.name;
+
     const end = `export const ${exportName}ObjectSchema = Schema`;
     return `const Schema: z.ZodType<Prisma.${name}> = ${schema};\n\n ${end}`;
   }
@@ -252,24 +247,24 @@ export default class Transformer {
   }
 
   wrapWithZodObject(zodStringFields: string | string[]) {
-    let wrapped = '';
+    let wrapped = "";
 
-    wrapped += 'z.object({';
-    wrapped += '\n';
-    wrapped += '  ' + zodStringFields;
-    wrapped += '\n';
-    wrapped += '})';
+    wrapped += "z.object({";
+    wrapped += "\n";
+    wrapped += "  " + zodStringFields;
+    wrapped += "\n";
+    wrapped += "})";
     return wrapped;
   }
 
   wrapWithZodOUnion(zodStringFields: string[]) {
-    let wrapped = '';
+    let wrapped = "";
 
-    wrapped += 'z.union([';
-    wrapped += '\n';
-    wrapped += '  ' + zodStringFields.join(',');
-    wrapped += '\n';
-    wrapped += '])';
+    wrapped += "z.union([";
+    wrapped += "\n";
+    wrapped += "  " + zodStringFields.join(",");
+    wrapped += "\n";
+    wrapped += "])";
     return wrapped;
   }
 
@@ -280,15 +275,15 @@ export default class Transformer {
       (field) =>
         // TODO handle other cases if any
         // field.includes('create:') ||
-        field.includes('connectOrCreate:') || field.includes('connect:'),
+        field.includes("connectOrCreate:") || field.includes("connect:")
     );
 
     if (!shouldWrapWithUnion) {
-      return this.wrapWithZodObject(fields) + '.strict()';
+      return this.wrapWithZodObject(fields) + ".strict()";
     }
 
     const wrapped = fields.map(
-      (field) => this.wrapWithZodObject(field) + '.strict()',
+      (field) => this.wrapWithZodObject(field) + ".strict()"
     );
 
     return this.wrapWithZodOUnion(wrapped);
@@ -296,7 +291,7 @@ export default class Transformer {
 
   getFinalForm(zodStringFields: string[]) {
     const objectSchema = `${this.addExportObjectSchema(
-      this.addFinalWrappers({ zodStringFields }),
+      this.addFinalWrappers({ zodStringFields })
     )}\n`;
 
     const prismaImport = this.getImportPrisma();
@@ -320,20 +315,15 @@ export default class Transformer {
         return value.trim();
       });
 
-    let name = this.name;
-    let exportName = this.name;
-    if (isMongodbRawOp(name)) {
-      name = Transformer.rawOpsMap[name];
-      exportName = name.replace('Args', '');
-    }
+    const exportName = this.name;
 
     await writeFileSafely(
       path.join(
         Transformer.outputPath,
-        `schemas/objects/${exportName}.schema.ts`,
+        `schemas/objects/${exportName}.schema.ts`
       ),
 
-      this.getFinalForm(zodStringFields),
+      this.getFinalForm(zodStringFields)
     );
   }
 
@@ -367,8 +357,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${findUnique}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ where: ${modelName}WhereUniqueInputObjectSchema })`,
-            `${modelName}FindUnique`,
-          )}`,
+            `${modelName}FindUnique`
+          )}`
         );
       }
 
@@ -383,8 +373,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${findFirst}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ where: ${modelName}WhereInputObjectSchema.optional(), orderBy: ${modelName}OrderByWithRelationInputObjectSchema.optional(), cursor: ${modelName}WhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), distinct: z.array(${modelName}ScalarFieldEnumSchema).optional() })`,
-            `${modelName}FindFirst`,
-          )}`,
+            `${modelName}FindFirst`
+          )}`
         );
       }
 
@@ -399,8 +389,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${findMany}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ where: ${modelName}WhereInputObjectSchema.optional(), orderBy: ${modelName}OrderByWithRelationInputObjectSchema.optional(), cursor: ${modelName}WhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), distinct: z.array(${modelName}ScalarFieldEnumSchema).optional()  })`,
-            `${modelName}FindMany`,
-          )}`,
+            `${modelName}FindMany`
+          )}`
         );
       }
 
@@ -412,8 +402,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${createOne}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ data: ${modelName}CreateInputObjectSchema  })`,
-            `${modelName}CreateOne`,
-          )}`,
+            `${modelName}CreateOne`
+          )}`
         );
       }
 
@@ -425,8 +415,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${createMany}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ data: ${modelName}CreateManyInputObjectSchema  })`,
-            `${modelName}CreateMany`,
-          )}`,
+            `${modelName}CreateMany`
+          )}`
         );
       }
 
@@ -438,8 +428,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${deleteOne}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ where: ${modelName}WhereUniqueInputObjectSchema  })`,
-            `${modelName}DeleteOne`,
-          )}`,
+            `${modelName}DeleteOne`
+          )}`
         );
       }
 
@@ -451,8 +441,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${deleteMany}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ where: ${modelName}WhereInputObjectSchema.optional()  })`,
-            `${modelName}DeleteMany`,
-          )}`,
+            `${modelName}DeleteMany`
+          )}`
         );
       }
 
@@ -465,8 +455,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${updateOne}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ data: ${modelName}UpdateInputObjectSchema, where: ${modelName}WhereUniqueInputObjectSchema  })`,
-            `${modelName}UpdateOne`,
-          )}`,
+            `${modelName}UpdateOne`
+          )}`
         );
       }
 
@@ -479,8 +469,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${updateMany}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ data: ${modelName}UpdateManyMutationInputObjectSchema, where: ${modelName}WhereInputObjectSchema.optional()  })`,
-            `${modelName}UpdateMany`,
-          )}`,
+            `${modelName}UpdateMany`
+          )}`
         );
       }
 
@@ -494,8 +484,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${upsertOne}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ where: ${modelName}WhereUniqueInputObjectSchema, create: ${modelName}CreateInputObjectSchema, update: ${modelName}UpdateInputObjectSchema  })`,
-            `${modelName}Upsert`,
-          )}`,
+            `${modelName}Upsert`
+          )}`
         );
       }
 
@@ -509,8 +499,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${aggregate}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ where: ${modelName}WhereInputObjectSchema.optional(), orderBy: ${modelName}OrderByWithRelationInputObjectSchema.optional(), cursor: ${modelName}WhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional()  })`,
-            `${modelName}Aggregate`,
-          )}`,
+            `${modelName}Aggregate`
+          )}`
         );
       }
 
@@ -525,8 +515,8 @@ export default class Transformer {
           path.join(Transformer.outputPath, `schemas/${groupBy}.schema.ts`),
           `${this.getImportsForSchemas(imports)}${this.addExportSchema(
             `z.object({ where: ${modelName}WhereInputObjectSchema.optional(), orderBy: ${modelName}OrderByWithAggregationInputObjectSchema, having: ${modelName}ScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(${modelName}ScalarFieldEnumSchema)  })`,
-            `${modelName}GroupBy`,
-          )}`,
+            `${modelName}GroupBy`
+          )}`
         );
       }
     }
@@ -540,8 +530,8 @@ export default class Transformer {
         path.join(Transformer.outputPath, `schemas/enums/${name}.schema.ts`),
         `${this.getImportZod()}\n${this.addExportSchema(
           `z.enum(${JSON.stringify(values)})`,
-          `${name}`,
-        )}`,
+          `${name}`
+        )}`
       );
     }
   }

@@ -1,8 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from "fs";
 import path from "path";
 
-export const writeFileSafely = async (writeLocation: string, content: any) => {
+export const writeFileSafely = async (
+  writeLocation: string,
+  content: string
+) => {
   fs.mkdirSync(path.dirname(writeLocation), {
     recursive: true,
   });

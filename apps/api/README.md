@@ -1,26 +1,39 @@
 # Express Server with tRPC
 
-This example shows how to **implement a Typescript Express server with tRPC and Prisma**.
+This API app implements **a Typescript Express server with tRPC and Prisma**.
+
+It also implements some additional getting started setup:
+1. (Pending): Authentication using JWT refresh strategy.
+2. Permissions & Authorization logic using the submodule: `trpc-shield`.
+3. Codegen for Prisma schema CRUD using the submodule: `prisma-trpc-generator`.
+4. (Pending): Email templating using markdown.
 
 ## Getting started
 
-### 1. Create and seed the database using Prisma
+### 1. Create your prisma schema & initial migration
 
-Run the following command to create your SQLite database file:
+Once your schema is ready, run the following command to create your initial schema migration:
 
 ```bash
-pnpm dlx prisma migrate dev --name init
+pnpm exec prisma migrate dev --name init
 ```
-or if you have prisma cli 4.x:
+
+### 1. Compile the prisma-trpc-generator submodule, then generate the prisma client & CRUD routers
+
+Navigate to the `prisma-trpc-generator` module directory in the CLI, then run:
+
 ```bash
-prisma migrate dev --name init
+pnpm run compile 
 ```
 
+Then, at the root this api package, run:
+```bash
+pnpm run prisma:migrate
+```
 
-### 2. Start the server
+### 3. Start the server
 
 Launch your server with this command:
-
 ```
 pnpm run dev
 ```
@@ -32,5 +45,5 @@ Note: Your `tRPC` endpoint is where your requests will go, so make sure to add a
 Example endpoint:
 
 ```
-http://localhost:3011/trpc/user.updateOneUser
+http://localhost:3011/trpc/user.findUnique
 ```

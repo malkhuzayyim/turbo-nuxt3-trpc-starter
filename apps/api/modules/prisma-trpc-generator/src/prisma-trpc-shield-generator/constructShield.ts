@@ -1,11 +1,11 @@
-export const getImports = (type: "trpc" | "trpc-shield") => {
+const getImports = (type: "trpc" | "trpc-shield") => {
   const trpcImportStatement = "import * as trpc from '@trpc/server';\n";
   const trpcShieldImportStatement =
     "import { shield, allow } from 'trpc-shield';\n";
   return type === "trpc" ? trpcImportStatement : trpcShieldImportStatement;
 };
 
-export const wrapWithObject = ({
+const wrapWithObject = ({
   shieldItemLines,
 }: {
   shieldItemLines: Array<string> | string;
@@ -20,7 +20,7 @@ export const wrapWithObject = ({
   return wrapped;
 };
 
-export const wrapWithTrpcShieldCall = ({
+const wrapWithTrpcShieldCall = ({
   shieldObjectTextWrapped,
 }: {
   shieldObjectTextWrapped: string;
@@ -33,12 +33,8 @@ export const wrapWithTrpcShieldCall = ({
   return wrapped;
 };
 
-export const wrapWithExport = ({
-  shieldObjectText,
-}: {
-  shieldObjectText: string;
-}) => {
-  return `export const permissions = ${shieldObjectText};`;
+const wrapWithExport = ({ shieldObjectText }: { shieldObjectText: string }) => {
+  return `const permissions = ${shieldObjectText};`;
 };
 
 export const constructShield = ({
